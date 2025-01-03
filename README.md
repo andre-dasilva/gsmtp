@@ -7,6 +7,11 @@ SMTP Client for Gleam
 
 Further documentation can be found at <https://hexdocs.pm/gsmtp>.
 
+## RFC
+
+* https://datatracker.ietf.org/doc/html/rfc5321
+* https://datatracker.ietf.org/doc/html/rfc821
+
 ## Current state
 
 A simple mail to a SMTP server can be sent
