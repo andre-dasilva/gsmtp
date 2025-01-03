@@ -2,7 +2,7 @@
 
 SMTP Client for gleam
 
-[![Package Version](https://img.shields.io/hexpm/v/smtp)](https://hex.pm/packages/gsmtp)
+[![Package Version](https://img.shields.io/hexpm/v/gsmtp)](https://hex.pm/packages/gsmtp)
 [![Hex Docs](https://img.shields.io/badge/hex-docs-ffaff3)](https://hexdocs.pm/gsmtp/)
 
 ```sh
