@@ -1,20 +1,18 @@
-import gleam/io
-import gleam/string
+import builder
+import logging
+import smtp
 
 pub fn main() {
-  let host = "127.0.0.1"
-  let port = "25"
-  let addr = host <> ":" <> port
+  logging.configure()
+  logging.set_level(logging.Debug)
 
-  let from = "test@example.com"
-  let to = ["andre@localhost"]
-  let subject = "SMTP Mail from gleam"
-  let body = "This is a test mail from gleam"
+  let message =
+    builder.new_builder()
+    |> builder.from_email("test@example.com")
+    |> builder.to_emails(["andre@localhost"])
+    |> builder.subject("SMTP Mail from gleam")
+    |> builder.body("This is a test mail from gleam")
+    |> builder.create()
 
-  io.println("Sending mail from")
-  io.println("HOST: " <> addr)
-  io.println("FROM: " <> from)
-  io.println("TO: " <> string.join(to, ", "))
-  io.println("SUBJECT: " <> subject)
-  io.println("BODY: " <> body)
+  let assert Ok(Nil) = smtp.send("127.0.0.1", 25, message)
 }
