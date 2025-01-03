@@ -1,20 +1,15 @@
-# smtp
+# gsmtp
 
-[![Package Version](https://img.shields.io/hexpm/v/smtp)](https://hex.pm/packages/smtp)
-[![Hex Docs](https://img.shields.io/badge/hex-docs-ffaff3)](https://hexdocs.pm/smtp/)
+SMTP Client for gleam
+
+[![Package Version](https://img.shields.io/hexpm/v/smtp)](https://hex.pm/packages/gsmtp)
+[![Hex Docs](https://img.shields.io/badge/hex-docs-ffaff3)](https://hexdocs.pm/gsmtp/)
 
 ```sh
-gleam add smtp
-```
-```gleam
-import smtp
-
-pub fn main() {
-  // TODO: An example of the project in use
-}
+gleam add gsmtp
 ```
 
-Further documentation can be found at <https://hexdocs.pm/smtp>.
+Further documentation can be found at <https://hexdocs.pm/gsmtp>.
 
 ## Development
 
