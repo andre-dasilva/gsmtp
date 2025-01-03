@@ -74,7 +74,7 @@ RCPT TO:<user@localhost>
 DATA
 Subject: Test Email
 From: sender@example.com
-To: recipient@example.com
+To: user@localhost
 
 This is a test email sent manually.
 
