@@ -34,9 +34,9 @@ fn check_server_code(expected_code: Int, response: BitArray) {
 }
 
 fn cmd(socket, expected_code, message) -> Result(BitArray, Error) {
-  logging.log(logging.Debug, "CLIENT: " <> message <> "\n")
+  logging.log(logging.Debug, "CLIENT: " <> message <> "\r\n")
 
-  use _ <- result.try(tcp_send(socket, message <> "\n"))
+  use _ <- result.try(tcp_send(socket, message <> "\r\n"))
 
   use packet <- result.try(tcp_receive(socket, 500))
 
@@ -81,11 +81,11 @@ fn log_sending_info(host, port, message: builder.Message) {
 fn setup_data(message: builder.Message) {
   ""
   |> string.append("Subject: " <> message.subject <> "\r\n")
-  |> string.append("From: <" <> message.subject <> ">\r\n")
+  |> string.append("From: <" <> message.from <> ">\r\n")
   |> string.append("To: <" <> string.join(message.to, ",") <> ">\r\n")
   |> string.append("\r\n")
   |> string.append(message.body)
-  |> string.append("\r\n.\r\n")
+  |> string.append("\r\n.")
 }
 
 pub fn send(host: String, port: Int, message: builder.Message) {

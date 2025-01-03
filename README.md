@@ -29,7 +29,7 @@ pub fn main() {
   let message =
     builder.new_builder()
     |> builder.from_email("test@example.com")
-    |> builder.to_emails(["andre@localhost"])
+    |> builder.to_emails(["user@localhost"])
     |> builder.subject("SMTP Mail from gleam")
     |> builder.body("This is a test mail from gleam")
     |> builder.create()
@@ -44,6 +44,7 @@ pub fn main() {
 - [ ] Auth
 - [ ] Extensions
 - [ ] Tests
+- [ ] Error handling
 - [ ] Docs
 - [ ] Cleanup API
 
@@ -57,6 +58,37 @@ sudo apt install postfix
 ```
 
 Make sure to setup postfix to send mails only locally
+
+For just simple SMTP command tests you can use telnet
+
+```sh
+telnet localhost 25
+```
+
+and run the following commands
+
+```sh
+HELO localhost
+MAIL FROM:<sender@example.com>
+RCPT TO:<user@localhost>
+DATA
+Subject: Test Email
+From: sender@example.com
+To: recipient@example.com
+
+This is a test email sent manually.
+
+.
+QUIT
+```
+
+This is basically what the library does. it opens a TCP connection and runs the commands
+
+Run the following command to see the mails:
+
+```sh
+tail -f /var/mail/user
+```
 
 To test the gleam smtp client run
 

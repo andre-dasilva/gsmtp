@@ -33,7 +33,6 @@ func main() {
 	header["To"] = toHeader
 	header["From"] = fromHeader
 	header["Subject"] = subjectHeader
-	header["Content-Type"] = `text/html; charset="UTF-8"`
 	msg := ""
 
 	for k, v := range header {
