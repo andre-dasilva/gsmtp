@@ -1,0 +1,21 @@
+services:
+  smtp4dev:
+    image: rnwood/smtp4dev:prerelease # https://github.com/rnwood/smtp4dev/issues/1515
+    restart: always
+    ports:
+      - '5000:80'
+      - '2525:25'
+    volumes:
+      - smtp4dev-data:/smtp4dev
+      - ./smtp4dev.json:/smtp4dev/appsettings.json
+    environment:
+      # https://github.com/rnwood/smtp4dev/blob/master/Rnwood.Smtp4dev/appsettings.json
+      - ServerOptions__Urls=http://*:80
+      - ServerOptions__HostName=smtp4dev
+      - ServerOptions__TlsMode=None
+      - ServerOptions__AuthenticationRequired=true
+      - ServerOptions__Users=true
+      - ServerOptions__SmtpAllowAnyCredentials=false
+
+volumes:
+  smtp4dev-data:

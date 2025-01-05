@@ -1,6 +1,7 @@
 import builder
 import gleam/bit_array
 import gleam/int
+import gleam/io
 import gleam/list
 import gleam/option.{type Option, Some}
 import gleam/result
@@ -118,11 +119,11 @@ fn auth_plain(socket, extensions, auth: Option(#(String, String))) {
 
   case has_auth_extension, auth {
     True, Some(#(user, password)) -> {
-      let user_and_password = "\\0" <> user <> "\\0" <> password
+      let user_and_password = "\u{0000}" <> user <> "\u{0000}" <> password
       let base64_encoded =
-        bit_array.base64_encode(<<user_and_password:utf8>>, False)
+        bit_array.base64_encode(<<user_and_password:utf8>>, True)
 
-      cmd(socket, 250, "AUTH PLAIN " <> base64_encoded)
+      cmd(socket, 235, "AUTH PLAIN " <> base64_encoded)
     }
     _, _ -> Ok(<<>>)
   }
@@ -142,9 +143,10 @@ fn data(socket) {
 
 fn data_body(socket, message: builder.Message) {
   let body =
-    string.append(message.subject, "Subject: " <> message.subject <> "\r\n")
-    |> string.append("From: <" <> message.from <> ">\r\n")
-    |> string.append("To: <" <> string.join(message.to, ",") <> ">\r\n")
+    ""
+    |> string.append("Subject: " <> message.subject <> "\r\n")
+    |> string.append("From: " <> message.from <> "\r\n")
+    |> string.append("To: " <> string.join(message.to, ",") <> "\r\n")
     |> string.append("\r\n")
     |> string.append(message.body)
     |> string.append("\r\n.")

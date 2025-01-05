@@ -2,36 +2,25 @@ package main
 
 import (
 	"fmt"
-	"net/mail"
 	"net/smtp"
 	"strings"
 )
 
 var host = "127.0.0.1"
-var port = "25"
+var port = "2525"
 var addr = host + ":" + port
 
 func main() {
-	fromName := "Testing"
-	fromEmail := "test@example.com"
-	toNames := []string{"Ted"}
-	toEmails := []string{"andre@localhost"}
-	subject := "This is the subject of your email"
-	body := "adsfasdf"
-	toAddresses := []string{}
+	fromEmail := "send@go.com"
+	toEmails := []string{"receive@go.com"}
+	subject := "Test Go E-Mail"
+	body := "Mail from Go"
 
-	for i := range toEmails {
-		to := mail.Address{Name: toNames[i], Address: toEmails[i]}
-		toAddresses = append(toAddresses, to.String())
-	}
-
-	toHeader := strings.Join(toAddresses, ", ")
-	from := mail.Address{Name: fromName, Address: fromEmail}
-	fromHeader := from.String()
+	toHeader := strings.Join(toEmails, ", ")
 	subjectHeader := subject
 	header := make(map[string]string)
 	header["To"] = toHeader
-	header["From"] = fromHeader
+	header["From"] = fromEmail
 	header["Subject"] = subjectHeader
 	msg := ""
 
@@ -40,44 +29,12 @@ func main() {
 	}
 
 	msg += "\r\n" + body
+
 	bMsg := []byte(msg)
-	// Send using local postfix service
-	c, err := smtp.Dial(addr)
 
-	if err != nil {
-		return
-	}
+	auth := smtp.PlainAuth("", "testuser", "start123", host)
 
-	defer c.Close()
-	if err = c.Mail(fromHeader); err != nil {
-		return
-	}
+	err := smtp.SendMail(addr, auth, fromEmail, toEmails, bMsg)
 
-	for _, addr := range toEmails {
-		if err = c.Rcpt(addr); err != nil {
-			return
-		}
-	}
-
-	w, err := c.Data()
-	if err != nil {
-		return
-	}
-	_, err = w.Write(bMsg)
-	if err != nil {
-		return
-	}
-
-	err = w.Close()
-	if err != nil {
-		return
-	}
-
-	err = c.Quit()
-	// Or alternatively, send with remote service like Amazon SES
-	// err = smtp.SendMail(addr, auth, fromEmail, toEmails, bMsg)
-	// Handle response from local postfix or remote service
-	if err != nil {
-		return
-	}
+	fmt.Printf("%v", err)
 }

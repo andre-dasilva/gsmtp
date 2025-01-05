@@ -34,33 +34,36 @@ pub fn main() {
 
   let message =
     builder.new_builder()
-    |> builder.from_email("test@example.com")
-    |> builder.to_emails(["user@localhost"])
-    |> builder.subject("SMTP Mail from gleam")
-    |> builder.body("This is a test mail from gleam")
+    |> builder.from_email("send@gleam.com")
+    |> builder.to_emails(["receive@gleam.com"])
+    |> builder.subject("Test Gleam E-Mail")
+    |> builder.body("Mail from Gleam")
     |> builder.create()
 
-  let assert Ok(Nil) = smtp.send("127.0.0.1", 25, message)
+  let auth = Some(#("testuser", "start123"))
+
+  let assert Ok(Nil) =
+    smtp.send(host: "127.0.0.1", port: 2525, auth: auth, message: message)
 }
 ```
 
 ## TODO
 
-- [ ] TLS
-- [ ] Auth
-- [ ] Extensions
+- [X] Plain Auth
+- [X] Extensions
+- [ ] TLS (might be a bigger thing...)
 - [ ] Tests
 - [ ] Error handling
-- [ ] Docs
+- [ ] Better docs
 - [ ] Cleanup API
 
 
 ## Development
 
-Setup postfix (ubuntu) for a local SMTP server
+Use [smtp4dev](https://github.com/rnwood/smtp4dev) as a dev SMTP server
 
-```sh
-sudo apt install postfix
+```
+docker compose up
 ```
 
 Make sure to setup postfix to send mails only locally
@@ -68,7 +71,7 @@ Make sure to setup postfix to send mails only locally
 For just simple SMTP command tests you can use telnet
 
 ```sh
-telnet localhost 25
+telnet localhost 2525
 ```
 
 and run the following commands
@@ -89,12 +92,6 @@ QUIT
 ```
 
 This is basically what the library does. it opens a TCP connection and runs the commands
-
-Run the following command to see the mails:
-
-```sh
-tail -f /var/mail/user
-```
 
 To test the gleam smtp client run
 

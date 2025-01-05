@@ -1,0 +1,82 @@
+{
+    "Environment": "Production",
+    "ServerOptions": {
+        "LockSettings": false,
+        "Urls": "http://localhost:5000",
+        "BasePath": "/",
+        "Port": 25,
+        "AllowRemoteConnections": true,
+        "DisableIPv6": true,
+        "Database": "database.db",
+        "NumberOfMessagesToKeep": 100,
+        "NumberOfSessionsToKeep": 100,
+        "TlsMode": "None",
+        "TlsCertificate": "",
+        "TlsCertificatePrivateKey": "",
+        "TlsCertificatePassword": "",
+        "ImapPort": 143,
+        "DisableMessageSanitisation": false,
+        "AuthenticationRequired": true,
+        "SmtpAllowAnyCredentials": false,
+        "SmtpEnabledAuthTypesWhenNotSecureConnection": "PLAIN,LOGIN,CRAM-MD5",
+        "SmtpEnabledAuthTypesWhenSecureConnection": "PLAIN,LOGIN,CRAM-MD5",
+        "SecureConnectionRequired": false,
+        "CredentialsValidationExpression": "",
+        "RecipientValidationExpression": "",
+        "MessageValidationExpression": "",
+        "WebAuthenticationRequired": false,
+        "Users": [
+            {
+                "Username": "testuser",
+                "Password": "start123",
+                "DefaultMailbox": "Default"
+            }
+        ],
+        "Mailboxes": [
+            {
+                "Name": "Default",
+                "Recipients": "*"
+            }
+        ]
+    },
+    "RelayOptions": {
+        "SmtpServer": "",
+        "SmtpPort": 25,
+        "TlsMode": "Auto",
+        "AutomaticEmails": [],
+        "AutomaticRelayExpression": "",
+        "SenderAddress": "",
+        "Login": "",
+        "Password": ""
+    },
+    "DesktopSettings": {
+        "MinimiseToTrayIcon": true
+    },
+    "Serilog": {
+        "Using": [
+            "Serilog",
+            "Serilog.Sinks.Console"
+        ],
+        "MinimumLevel": {
+            "Default": "Information",
+            "Override": {
+                "Microsoft": "Warning",
+                "Microsoft.EntityFrameworkCore": "Warning"
+            }
+        },
+        "WriteTo": [
+            {
+                "Name": "Console",
+                "args": {
+                    "outputTemplate": "{Message:lj}{NewLine}{Exception}"
+                }
+            }
+        ],
+        "Properties": {
+            "ApplicationName": "Smtp4Dev"
+        }
+    },
+    "ClientOptions": {
+        "PageSize": 30
+    }
+}

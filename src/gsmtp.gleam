@@ -1,5 +1,5 @@
 import builder
-import gleam/option.{None, Some}
+import gleam/option.{Some}
 import logging
 import smtp
 
@@ -9,14 +9,14 @@ pub fn main() {
 
   let message =
     builder.new_builder()
-    |> builder.from_email("test@example.com")
-    |> builder.to_emails(["andre@localhost"])
-    |> builder.subject("SMTP Mail from gleam")
-    |> builder.body("This is a test mail from gleam")
+    |> builder.from_email("send@gleam.com")
+    |> builder.to_emails(["receive@gleam.com"])
+    |> builder.subject("Test Gleam E-Mail")
+    |> builder.body("Mail from Gleam")
     |> builder.create()
 
   let auth = Some(#("testuser", "start123"))
 
   let assert Ok(Nil) =
-    smtp.send(host: "127.0.0.1", port: 25, auth: auth, message: message)
+    smtp.send(host: "127.0.0.1", port: 2525, auth: auth, message: message)
 }
