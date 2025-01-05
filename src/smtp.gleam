@@ -1,7 +1,6 @@
 import builder
 import gleam/bit_array
 import gleam/int
-import gleam/io
 import gleam/list
 import gleam/option.{type Option, Some}
 import gleam/result
