@@ -9,8 +9,9 @@ Further documentation can be found at <https://hexdocs.pm/gsmtp>.
 
 ## RFC
 
-* https://datatracker.ietf.org/doc/html/rfc5321
-* https://datatracker.ietf.org/doc/html/rfc821
+* SMTP: https://datatracker.ietf.org/doc/html/rfc5321
+* OLD SMTP: https://datatracker.ietf.org/doc/html/rfc821
+* Auth: https://datatracker.ietf.org/doc/html/rfc4616
 
 ## Current state
 
