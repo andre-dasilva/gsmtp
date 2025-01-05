@@ -8,14 +8,5 @@ services:
     volumes:
       - smtp4dev-data:/smtp4dev
       - ./smtp4dev.json:/smtp4dev/appsettings.json
-    environment:
-      # https://github.com/rnwood/smtp4dev/blob/master/Rnwood.Smtp4dev/appsettings.json
-      - ServerOptions__Urls=http://*:80
-      - ServerOptions__HostName=smtp4dev
-      - ServerOptions__TlsMode=None
-      - ServerOptions__AuthenticationRequired=true
-      - ServerOptions__Users=true
-      - ServerOptions__SmtpAllowAnyCredentials=false
-
 volumes:
   smtp4dev-data:
