@@ -1,9 +1,8 @@
 import builder
 import gleam/bit_array
 import gleam/int
-import gleam/io
 import gleam/list
-import gleam/option.{type Option, None, Some}
+import gleam/option.{type Option, Some}
 import gleam/result
 import gleam/string
 import logging
@@ -22,7 +21,7 @@ fn tcp_connect(host, port, timeout) {
 }
 
 fn tcp_send(socket, message) {
-  logging.log(logging.Debug, "CLIENT: " <> message <> "\r\n")
+  logging.log(logging.Debug, "CLIENT: " <> message)
 
   mug.send(socket, <<message:utf8>>)
   |> result.map_error(TcpError)
@@ -69,40 +68,43 @@ fn cmd(socket, expected_code, message) -> Result(BitArray, Error) {
 }
 
 fn opening_message(socket, timeout) {
-  tcp_receive(socket, timeout)
+  use packet <- result.try(tcp_receive(socket, timeout))
+  check_server_code(220, packet)
 }
 
 fn find_extension(response) {
   let try_split_once = fn(extension, delimiter) {
-    case string.split_once(extension, delimiter) {
-      Ok(#(_, ext)) -> {
-        Ok(ext)
-      }
-      Error(e) -> Error(e)
-    }
+    string.split_once(extension, delimiter)
+    |> result.map(fn(extension) { extension.1 })
   }
+
   let assert Ok(response_str) = bit_array.to_string(response)
 
-  let res =
+  let extensions =
     string.split(response_str, "\n")
     |> list.drop(1)
     |> list.map(fn(extension) {
-      result.or(try_split_once(extension, "-"), try_split_once(extension, " "))
+      try_split_once(extension, "-")
+      |> result.or(try_split_once(extension, " "))
     })
-    |> list.filter_map(Error)
+    |> list.filter_map(fn(x) { x })
 
-  Ok(res)
+  Ok(extensions)
+}
+
+fn has_extension(extensions, search) {
+  list.find(extensions, fn(extension) { string.starts_with(extension, search) })
+  |> result.is_ok
 }
 
 fn ehlo(socket, host) {
-  use _ <- result.try(cmd(socket, 250, "EHLO " <> host))
-
-  case cmd {
+  case cmd(socket, 250, "EHLO " <> host) {
     Ok(response) -> {
       find_extension(response)
     }
     Error(_) -> {
       helo(socket, host)
+      |> result.map(fn(_) { [] })
     }
   }
 }
@@ -112,15 +114,17 @@ fn helo(socket, host) {
 }
 
 fn auth_plain(socket, extensions, auth: Option(#(String, String))) {
-  case auth {
-    Some(#(user, password)) -> {
+  let has_auth_extension = has_extension(extensions, "AUTH")
+
+  case has_auth_extension, auth {
+    True, Some(#(user, password)) -> {
       let user_and_password = "\\0" <> user <> "\\0" <> password
       let base64_encoded =
         bit_array.base64_encode(<<user_and_password:utf8>>, False)
 
       cmd(socket, 250, "AUTH PLAIN " <> base64_encoded)
     }
-    None -> Ok(<<>>)
+    _, _ -> Ok(<<>>)
   }
 }
 
@@ -175,7 +179,7 @@ pub fn send(
 
   use _ <- result.try(opening_message(socket, timeout))
 
-  let extensions = ehlo(socket, "localhost")
+  use extensions <- result.try(ehlo(socket, "localhost"))
 
   use _ <- result.try(auth_plain(socket, extensions, auth))
 
